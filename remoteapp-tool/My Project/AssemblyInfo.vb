@@ -11,8 +11,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("RemoteApp Tool")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Kim Knight")> 
-<Assembly: AssemblyProduct("RemoteApp Tool")> 
-<Assembly: AssemblyCopyright("Created by Kim Knight")> 
+<Assembly: AssemblyProduct("RemoteApp Tool")>
+<Assembly: AssemblyCopyright("Created by Kim Knight - Modified by Brian Gale")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("5.4.0.18")>
-<Assembly: AssemblyFileVersion("5.4.0.18")>
+<Assembly: AssemblyVersion("5.4.16.1")>
+<Assembly: AssemblyFileVersion("5.4.16.1")>
