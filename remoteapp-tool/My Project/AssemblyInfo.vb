@@ -11,14 +11,14 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("RemoteApp Tool")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Kim Knight")> 
-<Assembly: AssemblyProduct("RemoteApp Tool")> 
-<Assembly: AssemblyCopyright("Created by Kim Knight")> 
+<Assembly: AssemblyProduct("RemoteApp Tool")>
+<Assembly: AssemblyCopyright("Created by Kim Knight - Modified by Brian Gale")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("fbd55db5-06ea-4e43-92a4-6e96893013cc")> 
+<Assembly: Guid("fbd55db5-06ea-4e43-92a4-6e96893013cc")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("5.4.0.0")> 
-<Assembly: AssemblyFileVersion("5.4.0.0")> 
+<Assembly: AssemblyVersion("5.4.0.1")>
+<Assembly: AssemblyFileVersion("5.4.0.1-BETA")>

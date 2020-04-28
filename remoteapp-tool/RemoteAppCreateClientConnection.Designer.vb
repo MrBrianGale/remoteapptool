@@ -72,6 +72,7 @@ Partial Class RemoteAppCreateClientConnection
         Me.CertificateComboBox = New System.Windows.Forms.ComboBox()
         Me.CertificateLabel = New System.Windows.Forms.Label()
         Me.CheckBoxSignRDPEnabled = New System.Windows.Forms.CheckBox()
+        Me.Advanced_Button = New System.Windows.Forms.Button()
         Me.ServerGroupBox.SuspendLayout()
         Me.RDGWGroupBox.SuspendLayout()
         Me.ClientConnectionGroupBox.SuspendLayout()
@@ -263,6 +264,7 @@ Partial Class RemoteAppCreateClientConnection
         '
         'ClientConnectionGroupBox
         '
+        Me.ClientConnectionGroupBox.Controls.Add(Me.Advanced_Button)
         Me.ClientConnectionGroupBox.Controls.Add(Me.MSIRadioButton)
         Me.ClientConnectionGroupBox.Controls.Add(Me.RDPRadioButton)
         Me.ClientConnectionGroupBox.Controls.Add(Me.CreateRAWebIcon)
@@ -405,7 +407,7 @@ Partial Class RemoteAppCreateClientConnection
         Me.TopLevelRadioButton.AutoSize = True
         Me.TopLevelRadioButton.Location = New System.Drawing.Point(366, 17)
         Me.TopLevelRadioButton.Name = "TopLevelRadioButton"
-        Me.TopLevelRadioButton.Size = New System.Drawing.Size(72, 19)
+        Me.TopLevelRadioButton.Size = New System.Drawing.Size(71, 19)
         Me.TopLevelRadioButton.TabIndex = 4
         Me.TopLevelRadioButton.Text = "Top level"
         Me.TopLevelRadioButton.UseVisualStyleBackColor = True
@@ -603,6 +605,16 @@ Partial Class RemoteAppCreateClientConnection
         Me.CheckBoxSignRDPEnabled.Text = "Sign RDP file"
         Me.CheckBoxSignRDPEnabled.UseVisualStyleBackColor = True
         '
+        'Advanced_Button
+        '
+        Me.Advanced_Button.Location = New System.Drawing.Point(108, 22)
+        Me.Advanced_Button.Name = "Advanced_Button"
+        Me.Advanced_Button.Size = New System.Drawing.Size(75, 23)
+        Me.Advanced_Button.TabIndex = 4
+        Me.Advanced_Button.Tag = "Advanced RDP Options"
+        Me.Advanced_Button.Text = "Advanced"
+        Me.Advanced_Button.UseVisualStyleBackColor = True
+        '
         'RemoteAppCreateClientConnection
         '
         Me.AcceptButton = Me.CreateButton
@@ -693,4 +705,5 @@ Partial Class RemoteAppCreateClientConnection
     Friend WithEvents CertificateComboBox As ComboBox
     Friend WithEvents CertificateLabel As Label
     Friend WithEvents CheckBoxCreateSignedAndUnsigned As CheckBox
+    Friend WithEvents Advanced_Button As Button
 End Class
