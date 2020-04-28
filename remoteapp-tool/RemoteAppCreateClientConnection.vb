@@ -3,10 +3,13 @@
 Public Class RemoteAppCreateClientConnection
 
     Private RemoteApp As New RemoteAppLib.RemoteApp
+    Private AdvancedSettings As New AdvancedRDP
 
     Public Sub CreateClientConnection(SelectedRemoteApp As RemoteAppLib.RemoteApp)
 
         RemoteApp = SelectedRemoteApp
+
+
 
         Dim rdpSign As New RDPSign.RDPSign
         Dim RemoteAppShortName = RemoteApp.Name
@@ -173,6 +176,7 @@ Public Class RemoteAppCreateClientConnection
         If RDPRadioButton.Checked Then
             CreateButton.ImageIndex = 6
             CheckBoxCreateSignedAndUnsigned.Enabled = True
+            Advanced_Button.Visible = True
         Else
             CreateButton.ImageIndex = 1
             CheckBoxCreateSignedAndUnsigned.Enabled = False
@@ -302,6 +306,8 @@ Public Class RemoteAppCreateClientConnection
         RDPfile.remoteapplicationprogram = "||" & App.Name
         RDPfile.remoteapplicationmode = 1
         RDPfile.disableremoteappcapscheck = 1
+        RDPfile.audiocapturemode = AdvancedSettings.GetMicSettings
+        RDPfile.audiomode = AdvancedSettings.GetSpeakerSettings
 
         RDPfile.alternate_shell = "rdpinit.exe"
 
@@ -429,5 +435,15 @@ Public Class RemoteAppCreateClientConnection
         If CheckBoxCreateSignedAndUnsigned.Checked = True Then
             CheckBoxSignRDPEnabled.Checked = True
         End If
+    End Sub
+
+    Private Sub MSIRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles MSIRadioButton.CheckedChanged
+        If (MSIRadioButton.Checked = True) Then
+            Advanced_Button.Visible = True
+        End If
+    End Sub
+
+    Private Sub Advanced_Button_Click(sender As Object, e As EventArgs) Handles Advanced_Button.Click
+        AdvancedSettings.ShowAdvancedConfig()
     End Sub
 End Class
