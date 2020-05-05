@@ -64,7 +64,16 @@ Public Class RDP
 
         Dim rdpTempPath = TempPath & "\" & ProductBaseFileName & ".rdp"
         Dim icoTempPath = TempPath & "\" & ProductBaseFileName & ".ico"
-
+        If rdpFilePath = rdpTempPath Then
+            rdpTempPath = TempPath & "\" & ProductBaseFileName & "_2.rdp"
+        End If
+        If IconFilePath = icoTempPath Then
+            icoTempPath = TempPath & "\" & ProductBaseFileName & "_2.ico"
+        End If
+        If msiPath = DestinationPath Then
+            MessageBox.Show("Destination to save file appears to be in your temp folder.  This folder location is not supported and as such the MSI will be generated in the root of your C drive.")
+            DestinationPath = "C:\"
+        End If
         'Define temp files to delete
         Dim FilesToDelete As List(Of String) = New List(Of String)(New String() {wxsPath, wixobjPath, wixpdbPath})
         Dim LockCheck As New LockChecker.LockChecker()
@@ -80,11 +89,22 @@ Public Class RDP
                 If (MessageBox.Show("The file " + rdpTempPath + " is currently locked.  Lock information:" + FileLocked + vbNewLine + "Do you want to try again?", "File Locked", MessageBoxButtons.YesNo) = DialogResult.Yes) Then
                     FileLocked = LockCheck.CheckLock(rdpTempPath)
                 Else
-                    MessageBox.Show("The following file will not be deleted:" + vbNewLine + rdpTempPath)
+                    MessageBox.Show("The following file will not be copied:" + vbNewLine + rdpTempPath)
                     SkipFile = True
                     FileLocked = "No locks"
                 End If
             End While
+            FileLocked = LockCheck.CheckLock(rdpFilePath)
+            While Not (FileLocked = "No locks")
+                If (MessageBox.Show("The file " + rdpFilePath + " is currently locked.  Lock information:" + FileLocked + vbNewLine + "Do you want to try again?", "File Locked", MessageBoxButtons.YesNo) = DialogResult.Yes) Then
+                    FileLocked = LockCheck.CheckLock(rdpFilePath)
+                Else
+                    MessageBox.Show("The following file will not be copied:" + vbNewLine + rdpTempPath)
+                    SkipFile = True
+                    FileLocked = "No locks"
+                End If
+            End While
+
             If Not (SkipFile) Then
                 My.Computer.FileSystem.CopyFile(rdpFilePath, rdpTempPath, True)
             End If
@@ -102,7 +122,6 @@ Public Class RDP
                     End If
                 End While
                 If Not (SkipFile) Then
-
                     My.Computer.FileSystem.CopyFile(IconFilePath, icoTempPath, True)
                 End If
 
@@ -135,7 +154,6 @@ Public Class RDP
             End If
         End While
         If Not (SkipFile) Then
-
             My.Computer.FileSystem.MoveFile(msiPath, DestinationPath, True)
         End If
 
