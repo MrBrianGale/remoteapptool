@@ -75,40 +75,12 @@ Public Class RDP
 
         'if RDP file not in temp, copy to temp
         If Not rdpInTemp Then
-            FileLocked = LockCheck.CheckLock(rdpTempPath)
-            While Not (FileLocked = "No locks")
-                If (MessageBox.Show("The file " + rdpTempPath + " is currently locked.  Lock information:" + FileLocked + vbNewLine + "Do you want to try again?", "File Locked", MessageBoxButtons.YesNo) = DialogResult.Yes) Then
-                    FileLocked = LockCheck.CheckLock(rdpTempPath)
-                Else
-                    MessageBox.Show("The following file will not be deleted:" + vbNewLine + rdpTempPath)
-                    SkipFile = True
-                    FileLocked = "No locks"
-                End If
-            End While
-            If Not (SkipFile) Then
-                My.Computer.FileSystem.CopyFile(rdpFilePath, rdpTempPath, True)
+            If (CopyOrMove(rdpFilePath, rdpTempPath, True) = 0) Then
+                FilesToDelete.Add(rdpTempPath)
             End If
-
-            FilesToDelete.Add(rdpTempPath)
-            If hasIcon Then
-                FileLocked = LockCheck.CheckLock(icoTempPath)
-                While Not (FileLocked = "No locks")
-                    If (MessageBox.Show("The file " + icoTempPath + " is currently locked.  Lock information:" + FileLocked + vbNewLine + "Do you want to try again?", "File Locked", MessageBoxButtons.YesNo) = DialogResult.Yes) Then
-                        FileLocked = LockCheck.CheckLock(icoTempPath)
-                    Else
-                        MessageBox.Show("The following file will not be deleted:" + vbNewLine + icoTempPath)
-                        SkipFile = True
-                        FileLocked = "No locks"
-                    End If
-                End While
-                If Not (SkipFile) Then
-
-                    My.Computer.FileSystem.CopyFile(IconFilePath, icoTempPath, True)
-                End If
-
+            If (CopyOrMove(IconFilePath, icoTempPath, True) = 0) Then
                 FilesToDelete.Add(icoTempPath)
             End If
-
         End If
 
         'Save WXS file containing generated WXS string
@@ -135,13 +107,81 @@ Public Class RDP
             End If
         End While
         If Not (SkipFile) Then
-
-            My.Computer.FileSystem.MoveFile(msiPath, DestinationPath, True)
+            'My.Computer.FileSystem.MoveFile(msiPath, DestinationPath, True)
+            If (CopyOrMove(msiPath, DestinationPath, False) = 1) Then
+                MessageBox.Show("There was an error moving the generated MSI file to the destination.  It may still be located at " + msiPath + ".")
+            End If
         End If
 
         DeleteFiles(FilesToDelete)
 
     End Sub
+
+    ' This function handles file copying and moving by first checking if the file is locked at the source or destination and then attempting the copy.
+    ' if the destination file is locked, it will change the destination file name prior to doing the copy or move
+    ' If copy is true, it will perform a copy.
+    ' If copy is false, it will perform a move.
+    ' If it successfully moves or copies the file, it will return 0.
+    ' On error, it will return 1.
+    Private Function CopyOrMove(ByVal Source As String, ByRef Destination As String, ByVal Copy As Boolean) As Integer
+        Dim LockCheck As New LockChecker.LockChecker()
+        Dim FileLocked As String
+        Dim Result = 0
+        Dim SkipFile As Boolean = False
+        FileLocked = LockCheck.CheckLock(Source)
+        While Not (FileLocked = "No locks")
+            If (MessageBox.Show("The file " + Source + " is currently locked.  Lock information:" + FileLocked + vbNewLine + "Do you want to try again?", "File Locked", MessageBoxButtons.YesNo) = DialogResult.Yes) Then
+                FileLocked = LockCheck.CheckLock(Source)
+            Else
+                MessageBox.Show("The following file will not be deleted:" + vbNewLine + Source)
+                SkipFile = True
+                FileLocked = "No locks"
+            End If
+        End While
+        FileLocked = LockCheck.CheckLock(Destination)
+        If Not (SkipFile) Then
+            While Not (FileLocked = "No locks")
+                If (MessageBox.Show("The file " + Destination + " is currently locked.  Lock information:" + FileLocked + vbNewLine + "Do you want to try again?", "File Locked", MessageBoxButtons.YesNo) = DialogResult.Yes) Then
+                    FileLocked = LockCheck.CheckLock(Destination)
+                Else
+                    MessageBox.Show("The following file will not be deleted:" + vbNewLine + Destination)
+                    SkipFile = True
+                    FileLocked = "No locks"
+                End If
+            End While
+        End If
+        If Not (SkipFile) Then
+            If (Copy) Then
+
+                Try
+                    My.Computer.FileSystem.CopyFile(Source, Destination, True)
+                Catch OuterEx As Exception
+                    Try
+                        Destination = Left(Destination, Len(Destination) - 4) + "_NEW" + Right(Destination, 4)
+                        My.Computer.FileSystem.CopyFile(Source, Destination, True)
+                    Catch InnerEx As Exception
+                        MessageBox.Show("Unable to copy the file.  Please create an issue on the github project and include the following:" + vbNewLine + InnerEx.Message)
+                        Result = 1
+                    End Try
+                End Try
+            Else
+                Try
+                    My.Computer.FileSystem.MoveFile(Source, Destination)
+                Catch OuterEx As Exception
+                    Try
+                        Destination = Left(Destination, Len(Destination) - 4) + "_NEW" + Right(Destination, 4)
+                        My.Computer.FileSystem.MoveFile(Source, Destination)
+                    Catch InnerEx As Exception
+                        MessageBox.Show("Unable to copy the file.  Please create an issue on the github project and include the following:" + vbNewLine + InnerEx.Message)
+                        Result = 1
+                    End Try
+                End Try
+            End If
+        Else
+            Result = 1
+        End If
+        Return Result
+    End Function
 
     Public Function WixInstalled() As Boolean
         If WixPath() = "" Then
